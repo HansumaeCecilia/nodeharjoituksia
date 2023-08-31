@@ -8,6 +8,8 @@
 const express = require('express');
 // Use Express Handlebars as template engine
 const {engine} = require('express-handlebars');
+const req = require('express/lib/request');
+const res = require('express/lib/response');
 
 // EXPRESS APPLICATION SETTINGS
 // ----------------------------
@@ -37,6 +39,25 @@ app.get('/', (req, res) => {
         'price': 31.25,
         'wind': 2,
         'temperature': 18
+    }
+    res.render('index', homePageData)
+
+});
+
+app.get('/hourly', (req, res) => {
+
+    // Handlebars needs a key to show data on a web page, json is a good way to send it
+    let hourlyPageData = { ' tabledata' : [
+        {'hour': 13,
+        'price': 31.44},
+        {'hour': 14,
+        'price': 32.10},
+        {'hour': 15,
+        'price': 30.50},
+        {'hour': 16,
+        'price': 29.90}
+        
+    ]
     }
     res.render('index', homePageData)
 
