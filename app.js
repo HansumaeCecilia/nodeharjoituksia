@@ -27,8 +27,18 @@ app.set('view engine', 'handlebars');
 // URL ROUTES
 // ----------
 
+//TODO: Add date and time as dynamic data for the homepage, is it sensible to use server for creating time values?
+
+// Route to homepage
 app.get('/', (req, res) => {
-    res.render('index')
+
+    // Handlebars needs a key to show data on a web page, json is a good way to send it
+    let homePageData = {
+        'price': 31.25,
+        'wind': 2,
+        'temperature': 18
+    }
+    res.render('index', homePageData)
 
 });
 
