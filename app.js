@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 app.get('/hourly', (req, res) => {
 
     // Handlebars needs a key to show data on a web page, json is a good way to send it
-    let hourlyPageData = { ' tabledata' : [
+    let hourlyPageData = { 'tableData' : [
         {'hour': 13,
         'price': 31.44},
         {'hour': 14,
@@ -59,7 +59,7 @@ app.get('/hourly', (req, res) => {
         
     ]
     }
-    res.render('index', homePageData)
+    res.render('hourly', hourlyPageData)
 
 });
 

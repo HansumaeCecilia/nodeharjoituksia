@@ -15,3 +15,27 @@ h1 {font-size: 48 px;}
 .average {
     color: cornflowerblue
 }
+
+table {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    border-spacing: 0;
+    border-collapse: separate;
+    overflow: hidden;
+}
+
+tr {
+    tr:nth-child(even){background-color: #454758;}
+}
+
+th {    
+    padding: 10px;
+    color: #FFFD54;
+    background-color: rgba(238, 255, 2, 0.511);
+}
+
+td {   
+    padding: 8px;
+    color: white;
+}
+
