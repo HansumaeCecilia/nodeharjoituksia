@@ -1,9 +1,11 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #0f0f0f;
 }
 
 h1 {font-size: 48 px;}
 
+/* CSS classes for colors describing prices */
 .expensive {
     color: crimson;
 }
@@ -17,23 +19,29 @@ h1 {font-size: 48 px;}
 }
 
 table {
-    border-radius: 10px;
+    border-radius: 10px; /* Rounded corners */
     border: 1px solid #ddd;
     border-spacing: 0;
     border-collapse: separate;
+    
+    /* Prevent table data and header background color exceeding table boundaries
+    This is needed because table has rounded corners */
     overflow: hidden;
 }
 
+    /* Set every other row's background (even) to light gray */
 tr {
     tr:nth-child(even){background-color: #454758;}
 }
 
+    /* Table header column settings */
 th {    
     padding: 10px;
     color: #FFFD54;
     background-color: rgba(238, 255, 2, 0.511);
 }
 
+    /* Table data column settings */
 td {   
     padding: 8px;
     color: white;

@@ -18,7 +18,7 @@ const res = require('express/lib/response');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Set folder paths: public is for assets and views for pages
+// Set folder paths: public is for assets and views is for pages
 app.use(express.static('public'));
 app.set('views', './views');
 
@@ -33,6 +33,7 @@ app.set('view engine', 'handlebars');
 
 // Route to homepage
 app.get('/', (req, res) => {
+    res.render('index')
 
     // Handlebars needs a key to show data on a web page, json is a good way to send it
     let homePageData = {
