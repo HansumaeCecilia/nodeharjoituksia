@@ -15,8 +15,6 @@ const {engine} = require('express-handlebars');
 
 // Get external data with node-fetch for version 3.x
 
-import fetch from 'node-fetch';
-
 // EXPRESS APPLICATION SETTINGS
 // ----------------------------
 
@@ -69,6 +67,18 @@ app.get('/hourly', (req, res) => {
 
 });
 
+// Route to hourly chart page
+app.get('/chart',(req, res) => {
+    
+    // Data will be presented in a bar chart. Data will be sent as JSON array to get it work on handlebars page
+    let tableHours = [12, 13, 14, 15, 16];
+    let jsonTableHours = JSON.stringify(tableHours)
+    let tablePrices = [10, 8, 10, 12, 15];
+    let jsonTablePrices = JSON.stringify(tablePrices)
+    let chartPageData =  { 'hours': jsonTableHours, 'prices': jsonTablePrices };
+    res.render('chart', chartPageData)
+});
+
 app.get('/test',(req, res) => {
 
     // Data will be presented in a bar chart. Data will be sent as JSON array
@@ -81,38 +91,6 @@ app.get('/test',(req, res) => {
    res.render('testCJSv4', chartPageData)
 
 });
-
-const LATEST_PRICES_ENDPOINT = 'https://api.porssisahko.net/v1/latest-prices.json';
-
-async function fetchLatestPriceData() {
-  const response = await fetch(LATEST_PRICES_ENDPOINT);
-
-  return response.json();
-}
-
-function getPriceForDate(date, prices) {
-  const matchingPriceEntry = prices.find(
-    (price) => new Date(price.startDate) <= date && new Date(price.endDate) > date
-  );
-
-  if (!matchingPriceEntry) {
-    throw 'Price for the requested date is missing';
-  }
-
-  return matchingPriceEntry.price;
-}
-
-// Note that it's enough to call fetchLatestPriceData() once in 12 hours
-const { prices } = await fetchLatestPriceData();
-
-try {
-  const now = new Date();
-  const price = getPriceForDate(now, prices);
-
-  console.log(`Hinta nyt (${now.toISOString()}): ${price} snt / kWh (sis. alv)`);
-} catch (e) {
-  console.error(`Hinnan haku epäonnistui, syy: ${e}`);
-}
 
 // START THE LISTENER
 app.listen(PORT);
