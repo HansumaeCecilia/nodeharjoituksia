@@ -18,7 +18,7 @@ h1 {font-size: 48 px;}
     color: cornflowerblue
 }
 
-table {
+table {    
     border-radius: 10px; /* Rounded corners */
     border: 1px solid #ddd;
     border-spacing: 0;
@@ -47,3 +47,9 @@ td {
     color: white;
 }
 
+/* Pages that show a digital clock uses this class definition*/
+.digitalClock {
+    font-size: xx-large;
+    font-family: 'Seven Segment';
+    color: green;
+}  
