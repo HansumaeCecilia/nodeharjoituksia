@@ -13,14 +13,15 @@ const pool = new Pool({
 
 let lastFetchedDate = '1.1.2023';
 
-cron.schedule('* * * * * *', () => {
+cron.schedule('*/5 15 * * * *', () => {
   try {
     let timestamp = new Date(); // Get the current timestamp
     let dateStr = timestamp.toLocaleDateString(); // Take datepart of the timestamp
 
     // If the date of last sucessful fetch is not the current day, fetch data
     if (lastFetchedDate != dateStr) {
-      console.log('Started fetching price data ');            
+      console.log('Started fetching price data');
+      fs.appendFileSync('dateOperations.log', 'Started fetching data ');            
       getPrices.fetchLatestPriceData().then((json) => {
 
         // Loop trough prices data and pick starDate and price elements
@@ -32,22 +33,27 @@ cron.schedule('* * * * * *', () => {
            
           // Function for running SQL operations asyncroneously
           const runQuery = async () => {
-            let resultset = await pool.query(sqlClause, values);                         
+            let resultset = await pool.query(sqlClause, values);
+            //fs.appendFileSync('dataOperations.log', values.toString);                                     
             return resultset;
           }
           // Call query function and echo results to console
-          runQuery().then((resultset) => console.log(resultset.rows[0]))                              
+          runQuery().then((resultset) => console.log(resultset.rows[0]));
+          // TODO: Add this entry to the console log          
         });
       });
-      lastFetchedDate = dateStr; // Set fetch date to current date        
-        console.log('Fetched at', lastFetchedDate) 
-        //fs.appendFileSync('sample.txt', lastFetchedDate)        
-      
+      lastFetchedDate = dateStr; // Set fetch date to current date 
+        fs.appendFileSync('dataOperations.log', '\nLast fetched at ' + lastFetchedDate);       
+        console.log('Latest fetch appended to the file', lastFetchedDate); 
+         // TODO: Add this entry to the console log   
+
     } else {
-      console.log('Data has been successfully retrieved earlier today');
-      fs.appendFileSync('sample.txt', getPrices)
+      fs.appendFileSync('dataOperations.log', '\nData has been successfully retrieved earlier today');
+      console.log('Retrieval message appended to the file');                 
     }
   } catch (error) {
-    console.log('An error occurred, trying again in 5 minutes until 4 PM');
+    fs.appendFileSync('dataOperations.log', '\nAn error occurred');
+    console.log('Error message appended to the file');    
+    // TODO: Add this entry to the console log
   }
 });

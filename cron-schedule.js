@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import cron from 'node-cron'
+import cron from 'node-cron';
 
 const PRICE_ENDPOINT = 'https://api.porssisahko.net/v1/price.json';
 
