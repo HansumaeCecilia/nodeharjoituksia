@@ -41,3 +41,33 @@ const statToTest4 = new stats.ArrayStats(testArray4, numberOfDecimals);
 test('Median should be 2.5', () => {
     expect(statToTest4.median()).toBe(2.5);
 });
+
+// Test variation of population
+const testArray5 = [1, 2, 2, 3, 3, 4];
+const statToTest5 = new stats.ArrayStats(testArray5, numberOfDecimals);
+
+test('2 most common numbers should be 2 and 3', () => {
+    expect(statToTest5.mode()).toEqual([2,3])
+});
+
+// Test variation of population
+const testArray6 = [1, 2, 2, 3, 3, 4];
+const statToTest6 = new stats.ArrayStats(testArray6, numberOfDecimals);
+
+test('Variation of population should be 0.9', () => {
+    expect(statToTest6.populationVariance()).toBeCloseTo(0.9, 1);
+});
+
+// Test standard deviation of population
+test('Standard deviation should be 1', () => {
+    expect(statToTest6.populationStdDev()).toBeCloseTo(1, 1);
+});
+
+// Test minimum value of an array
+test('Minimum value of array should be 1', () => {
+    expect(statToTest6.min()).toBe(1);
+});
+
+test('Maximum value of array should be 4', () => {
+    expect(statToTest6.max()).toBe(4);
+});
