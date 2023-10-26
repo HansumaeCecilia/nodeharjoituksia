@@ -8,6 +8,7 @@
 const express = require('express');
 // Use Express Handlebars as template engine
 const {engine} = require('express-handlebars');
+const cprice = require('./getHomePageData')
 
 // Get external data with node-fetch for version 2.x
 // This version should be installed as follows: npm install node-fetch@2
@@ -40,10 +41,16 @@ app.get('/', (req, res) => {
     
     // Handlebars needs a key to show data on a web page, json is a good way to send it
     let homePageData = {
-        'price': 31.25,
-        'wind': 2,
+        'price': 0,
+        'wind': 0,
         'temperature': 18
     }
+
+    cprice.getCurrentPrice().then((resultset) => {
+        console.log.apply(resultset.rows[0])
+        homePageData.price = resultset.rows[0]['price']
+    })
+
     res.render('index', homePageData)
 
 });
