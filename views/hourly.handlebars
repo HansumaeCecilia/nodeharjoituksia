@@ -38,16 +38,16 @@
     const barColors = ["blue", "green", "blue", "red", "red"];
 
     new Chart("hourlyChartChartJS", {
-        type: "line",
+        type: "bar",
         data: {
             labels: xValues,
             datasets: [{
-                backgroundColor: 'transparent',
+                backgroundColor: barColors,
                 data: yValues
             }]
         },
         options: {
-            legend: { display: false },
+            legend: { display: true },
             title: {
                 display: false,
                 text: "Sähkön tuntihinnat"

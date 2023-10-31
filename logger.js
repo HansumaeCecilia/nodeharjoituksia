@@ -15,7 +15,7 @@ const add2log = (entry, fileName) => {
     const isoTimeStamp = new Date().toISOString();
 
     // Construct a log entry with timestamp and a new line character
-    const logRow = entry + '@' + isoTimeStamp + '\n'
+    const logRow = entry + '@ ' + isoTimeStamp + '\n'
 
     // Append entry to a log file or give an error
     fs.appendFile(fileName, logRow, (err) => {
