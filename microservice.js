@@ -1,22 +1,39 @@
+// The pg-pool library for PostgreSQL Server
 const Pool = require('pg').Pool;
+
+// The node-cron library to schedule API call to porssisahko.net
 const cron = require('node-cron');
+
+// Home made library to access price API from porssisahko.net
 const getPrices = require('./getNewPrices')
-const fs = require('fs');
+
+// Home made library to add messages to a log file
 const logger = require('./logger')
 
+// Module to access DB settings
+const AppSettings = require('./handleSettings')
+
+// DATABASE SETTINGS
+// -----------------
+const appSettings = new AppSettings('settings.json')
+const settings = appSettings.readSettings()
+
+console.log(settings.server)
+
+// Create a new pool for Postgres connections using settings file parameters
 const pool = new Pool({
-  user: 'postgres', // In production always create a new user for the app
-  password: 'Q2werty',
-  host: 'localhost', // localhost or 127.0.0.1 if in the same computer, otherwise IP
-  database: 'smarthome',
-  port: 5432
+  user: settings.user, 
+  password: settings.password,
+  host: settings.server, 
+  database: settings.db,
+  port: settings.port
 });
 
 let lastFetchedDate = '1.1.2023';
 let message = ''
 const logFile = 'dataOperations.log'
 
-cron.schedule('*/5 15 * * *', () => {
+cron.schedule('* * * * * *', () => {
   try {
     let timestamp = new Date(); // Get the current timestamp
     let dateStr = timestamp.toLocaleDateString(); // Take date part of the timestamp
