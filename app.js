@@ -8,15 +8,9 @@
 const express = require('express');
 // Use Express Handlebars as template engine
 const {engine} = require('express-handlebars');
-const cprice = require('./getHomePageData')
-const cpriceTable = require('./getHourlyPageData')
-const cpriceChart = require('./getBarChartData')
 
-// Get external data with node-fetch for version 2.x
-// This version should be installed as follows: npm install node-fetch@2
-// const fetch = require('node-fetch');
-
-// Get external data with node-fetch for version 3.x
+// Module to run queries
+const query = require('./getPGData');
 
 // EXPRESS APPLICATION SETTINGS
 // ----------------------------
@@ -71,18 +65,6 @@ app.get('/hourly', (req, res) => {
     })
     
 });
-
-// Route to hourly chart page
-// app.get('/chart',(req, res) => {
-    
-//     // Data will be presented in a bar chart. Data will be sent as JSON array to get it work on handlebars page
-//     let tableHours = [12, 13, 14, 15, 16];
-//     let jsonTableHours = JSON.stringify(tableHours)
-//     let tablePrices = [10, 8, 10, 12, 15];
-//     let jsonTablePrices = JSON.stringify(tablePrices)
-//     let chartPageData =  { 'hours': jsonTableHours, 'prices': jsonTablePrices };
-//     res.render('chart', chartPageData)
-// });
 
 // Route to hourly chart page graph.handlebars
 app.get('/graph', (req, res) => {
