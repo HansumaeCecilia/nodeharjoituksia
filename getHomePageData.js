@@ -14,7 +14,7 @@ const Pool = require('pg').Pool;
 const pool = new Pool({
     user: 'postgres', // In production always create a new user for the app
     password: 'Q2werty',
-    host: 'localhost', // Or localhost or 127.0.0.1 if in the same computer
+    host: 'localhost', // localhost or 127.0.0.1 if in the same computer
     database: 'smarthome',
     port: 5432
   });
