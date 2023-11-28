@@ -14,6 +14,9 @@ const { transform, prettyPrint } = require('camaro');
 // The pg-pool library for PostgreSQL Server
 const Pool = require('pg').Pool;
 
+// Math for making calculations
+const math = require('mathjs')
+
 // Module to access DB settings
 const AppSettings = require('./handleSettings')
 
@@ -260,26 +263,94 @@ class WeatherForecastTimeValuePair {
     };
 
 }
+
+class WindVector {
+
+/** 
+* Constructor method.
+* @summary Creates a Wind vector object using wind components u and v
+* @param {float} windU - x-component of wind ie. eastward wind
+* @param {float} windV - y-component of wind ie. southward wind
+*/
+
+    constructor(windU, windV) {
+        this.windU = windU,
+        this.windV = windV,
+        this.windSpeed = math.sqrt(math.square(this.windV) + math.square(this.windV))
+    }
+
+    /** 
+    * A method to calculate and return wind angles in different formats.
+    * @return {obj} Returns wind vector angles (rad, deg, map, wind angles) and wind speed.
+    */
+
+    windParameters() {
+       // Reset all values
+       let windAngle = 0; // Wind blows from opposite direction to the vector
+       let geographicAngle = 0; // Angle of vector in a map
+
+       //atan2 returns angle in radians. Arguments are in (y,x) order!
+       let xyAngleRadian = math.atan2(this.windV, this.windU);
+       let xyAngleDegree = xyAngleRadian * 360 / (2 * Math.PI); // Convert radians to degrees
+
+       // Convert x-y plane directions into geographical directions
+       // There's a 90 degree shift between x-y and map directions
+       if (xyAngleDegree > 90) {
+        geographicAngle = 360 - (xyAngleDegree - 90);
+       }
+
+       else {
+        geographicAngle = 90 - xyAngleDegree;
+       }
+
+       if (geographicAngle < 180) {
+        windAngle = geographicAngle + 180;
+       }
+
+       else {
+        windAngle = geographicAngle - 180
+       }
+
+      // Return all calculated parameters
+      return {
+        xyAngleRadian: xyAngleRadian,
+        xyAngleDegree: xyAngleDegree,
+        geographicAngle: geographicAngle,
+        windAngle: math.round(windAngle),
+        windSpeed: math.round(this.windSpeed)
+      }
+
+    }
+}
+
 // Test reading observation data and storig results to database: Turku temperatures
 const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m', 'temperature');
+
+// Test reading forecast data and storig results to database: Turku temperatustes
+const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'Temperature', 'temperature')
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
 
 // Show parsing template to see resultset column names
 console.log(observationtimeValuePair.xmlTemplate);
-// Show fetched data as XML output
-// observationTimeValuePair.getFMIDataAsXML();
 
-// Insert observation data into the database
-// observationtimeValuePair.putTimeValuePairsToDb()
+let windVector = new WindVector(3, -4)
+console.log(windVector.windParameters())
 
-// Test reading forecast data and storig results to database: Turku temperatustes
-const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'Temperature', 'temperature')
-console.log(forecastTimeValuePair.url);
-console.log(forecastTimeValuePair.xmlTemplate)
-
-// Show fetched data as XML output
-// forecastTimeValuePair.getFMIDataAsXML()
 forecastTimeValuePair.putTimeValuePairsToDb()
 observationtimeValuePair.putTimeValuePairsToDb()
+
+// ===============================================
+//console.log(forecastTimeValuePair.url);
+//console.log(forecastTimeValuePair.xmlTemplate)
+
+//// Show fetched data as XML output
+// forecastTimeValuePair.getFMIDataAsXML()
+
+//// Show fetched data as XML output
+// observationTimeValuePair.getFMIDataAsXML();
+
+//// Insert observation data into the database
+// observationtimeValuePair.putTimeValuePairsToDb()
+// ================================================
