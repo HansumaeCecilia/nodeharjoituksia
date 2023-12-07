@@ -154,7 +154,7 @@ class WeatherForecastTimeValuePair {
     constructor(place, parameterCode, parameterName) {
         this.place = place;
         this.parameterCode = parameterCode;
-        this.parameterName = parameterName
+        this.parameterName = parameterName;
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
@@ -163,7 +163,7 @@ class WeatherForecastTimeValuePair {
             '&parameters=' +
             parameterCode;
 
-        // Constant XML path to the begining of time-value-pairs
+        // Constant XML path to the beginning of time-value-pairs
         this.WFSPath =
             'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
 
@@ -188,7 +188,7 @@ class WeatherForecastTimeValuePair {
         };
     }
 
-    // A method to test that weather data is available in a correct form
+    // A method to test that weather data is available in the correct form
     getFMIDataAsXML() {
         axios.request(this.axiosConfig).then((response) => {
             console.log(response.data)
@@ -204,7 +204,7 @@ class WeatherForecastTimeValuePair {
     // A method to fethc and convert weather data and save it into a databse
     putTimeValuePairsToDb() {
 
-        // Define the name of table to insert values it will be parameterName and _observation
+        // Define the name of table to insert values, it will be parameterName and _observation
 
         // Build correct table name
         const tableName = this.parameterName + '_forecast'
@@ -237,7 +237,7 @@ class WeatherForecastTimeValuePair {
                             // Call query function and log status of operation
                             runQuery().then((resultset) => {
 
-                                // Define a messaget to be logged to console or log file
+                                // Define a message to be logged to console or log file
                                 let message = ''
 
                                 // If there is alredy an observation for this time and place -> row is empty ie. undefined
@@ -277,6 +277,37 @@ class WindVector {
         this.windU = windU,
         this.windV = windV,
         this.windSpeed = math.sqrt(math.square(this.windV) + math.square(this.windV))
+
+        // // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
+        // this.url =
+        //     'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place='
+        //     + place +
+        //     '&parameters=' +
+        //     parameterCode;
+
+        // // Constant XML path to the beginning of time-value-pairs
+        // this.WFSPath =
+        //     'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
+
+        // // Names for the columns of the resultset
+        // let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
+
+        // // Change the name of the value key to the given parameter name
+        // names[this.parameterName] = names['value']
+        // delete names['value'] // Must be removed
+
+        // // Create a template for Camaro transformations
+        // this.xmlTemplate = [
+        //     this.WFSPath,
+        //     names,
+        // ];
+
+        // this.axiosConfig = {
+        //     method: 'get',
+        //     maxBodyLength: 'infinity',
+        //     url: this.url,
+        //     headers: {},
+        // };
     }
 
     /** 
@@ -324,24 +355,39 @@ class WindVector {
 }
 
 // Test reading observation data and storig results to database: Turku temperatures
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m', 'temperature');
+const tempObservationTimeValuePair = new WeatherObservationTimeValuePair('Kaarina', 't2m', 'temperature');
 
-// Test reading forecast data and storig results to database: Turku temperatustes
-const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'Temperature', 'temperature')
+// Test reading forecast data and storig results to database: Turku temperatures
+const tempForecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'Temperature', 'temperature')
 
-// Show url to fetch from
-console.log(observationtimeValuePair.url);
+// Test reading observation data and storig results to database: Turku wind speed
+const wsObservationTimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'wind_speed');
 
-// Show parsing template to see resultset column names
-console.log(observationtimeValuePair.xmlTemplate);
+// Test reading observation data and storig results to database: Turku wind direction
+const wsForecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'WindSpeedMS', 'wind_speed');
 
-let windVector = new WindVector(3, -4)
-console.log(windVector.windParameters())
+const wdObservationTimeValuePair = new WeatherObservationTimeValuePair('Turku', 'wd_10min', 'wind_direction');
 
-forecastTimeValuePair.putTimeValuePairsToDb()
-observationtimeValuePair.putTimeValuePairsToDb()
+// Test reading observation data and storig results to database: Turku wind direction
+const wdForecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'WindDirection', 'wind_direction');
+
+tempObservationTimeValuePair.putTimeValuePairsToDb()
+tempForecastTimeValuePair.putTimeValuePairsToDb()
+wsObservationTimeValuePair.putTimeValuePairsToDb()
+wsForecastTimeValuePair.putTimeValuePairsToDb()
+wdObservationTimeValuePair.putTimeValuePairsToDb()
+wdForecastTimeValuePair.putTimeValuePairsToDb()
+
+//let windVector = new WindVector(3, -4)
+//console.log(windVector.windParameters())
 
 // ===============================================
+// Show url to fetch from
+//console.log(tempObservationTimeValuePair.url);
+
+// Show parsing template to see resultset column names
+//console.log(tempObservationTimeValuePair.xmlTemplate);
+
 //console.log(forecastTimeValuePair.url);
 //console.log(forecastTimeValuePair.xmlTemplate)
 
